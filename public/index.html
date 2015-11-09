@@ -77,7 +77,7 @@
   <div ng-repeat='post in posts | orderBy:sort | filter : search' class='well col-md-10 col-md-offset-1'>
     <div class='col-md-1'>
       <p><h2 class='glyphicon glyphicon-thumbs-up' ng-click='upvote()'></h2></p>
-      <p> <h2> {{post.score}} </h2></p>
+      <p> <h2 ng-class='{positive : post.score > 0, negative : post.score < 0}'> {{post.score}} </h2></p>
       <p><h2 class='glyphicon glyphicon-thumbs-down' ng-click='downvote()'></h2></p>
     </div>
     <div class='col-md-3'>
@@ -109,8 +109,8 @@
         <input type='submit' class='btn btn-primary submit' ng-click='submitComment()'>
       </form>
     </div>
-    <div ng-show='post.commentShow' class='col-md-6 col-md-offset-3 submit'>
-      <div ng-repeat='comment in post.comments'>
+    <div ng-show='post.commentShow' class='col-md-6 col-md-offset-3 submit '>
+      <div ng-repeat='comment in post.comments' class='comment'>
         <p> <strong>{{comment.name}}</strong> says ... 
         </br>
           {{comment.comment}}</p>

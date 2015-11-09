@@ -15,10 +15,15 @@ a {
   width: 200px;
 }
 
-.positve{
+.positive{
   color: green;
 }
 
 .negative{
   color: red;
+}
+
+.comment{
+  margin-top: 10px;
+  border-bottom: 1px solid black;
 }

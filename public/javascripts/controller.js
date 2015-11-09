@@ -6,10 +6,10 @@ postit.controller('postitCtrl', function($scope, $http){
     $scope.sort = '-score'
 
     $scope.submitPost = function(){
+      
       $scope.post.comments = []
       $scope.post.score = 0
       $scope.post.date = new Date().toJSON()
-      console.log($scope.post.date)
       $scope.posts.push($scope.post)
       $scope.post = {}
       $scope.postForm = false
