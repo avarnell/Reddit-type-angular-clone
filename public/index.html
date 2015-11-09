@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html ng-app='postit'>
+<head>
+  <title>Postit!</title>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.4/angular.min.js'></script>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-MfvZlkHCEqatNoGiOXveE8FIwMzZg4W85qfrfIFBfYc= sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+  <link rel="stylesheet" href='./stylesheets/style.css'>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha256-Sk3nkD6mLTMOF0EOpNtsIry+s1CsaqQC1rVLTAy+0yc= sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+  <script src='./javascripts/controller.js'> </script>
+</head>
+
+<body ng-controller='postitCtrl'>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+          <p> Postit </p>
+        </a>
+      </div>
+      <ul class='nav navbar-nav'>
+        <li> <a href="#" ng-click='postForm = true'>Create</a> </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Sort By <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#" ng-click='setSort("-date")'>Time Posted</a></li>
+            <li><a href="#" ng-click='setSort("-score")'>Highest Rated</a></li>
+          </ul>
+        </li>
+        <form class="navbar-form navbar-right" role="search">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="Search" ng-model='search'>
+          </div>
+        </form>
+      </ul>
+    </div>
+  </nav>
+  <div ng-show='postForm'>
+    <div class='container'>
+      <div class='col-md-8 col-md-offset-2'>
+        <h1> New Post </h1>
+        <form class='form-group' novalidate name='newPost'>
+
+          <div ng-class='{"has-error" : newPost.title.$invalid && !newPost.title.$pristine}' class=class='form-group'>
+            <label for='title'> Title </label>
+            <input type='text' name='title' class='form-control ' ng-model='post.title' id='title' required > 
+            <p ng-show="newPost.title.$invalid && !newPost.title.$pristine" class="help-block">A title is required.</p>
+          </div>
+          
+          <div ng-class='{"has-error" : newPost.name.$invalid && !newPost.name.$pristine}' class=class='form-group'>
+            <label for='name'> Author </label>
+            <input type='text' name='name' class='form-control' ng-model='post.name' required>
+            <p ng-show="newPost.name.$invalid && !newPost.name.$pristine" class="help-block">Your name is required.</p>
+          </div>
+
+
+          <div ng-class='{"has-error" : newPost.image.$invalid && !newPost.image.$pristine}' class=class='form-group'>
+            <label for='image'> Image URL </label>
+            <input type='text' name='image' class='form-control' ng-model='post.image' required>
+            <p ng-show="newPost.image.$invalid && !newPost.image.$pristine" class="help-block">A URL is required.</p>
+          </div>
+          
+          
+          <div ng-class='{"has-error" : newPost.description.$invalid && !newPost.description.$pristine}' class=class='form-group'>
+            <label for='description'> Description </label>
+            <input type='text' name='description' class='form-control' ng-model='post.description' required>
+            <p ng-show="newPost.description.$invalid && !newPost.description.$pristine" class="help-block">A description is required.</p>
+          </div>
+
+          
+          <input type='submit' class='btn btn-primary submit' ng-click='submitPost()' ng-disabled="newPost.$invalid">
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div ng-repeat='post in posts | orderBy:sort | filter : search' class='well col-md-10 col-md-offset-1'>
+    <div class='col-md-1'>
+      <p><h2 class='glyphicon glyphicon-thumbs-up' ng-click='upvote()'></h2></p>
+      <p> <h2> {{post.score}} </h2></p>
+      <p><h2 class='glyphicon glyphicon-thumbs-down' ng-click='downvote()'></h2></p>
+    </div>
+    <div class='col-md-3'>
+      <img ng-src="{{post.image}}" class='size'>
+    </div>
+    <div class='col-md-7'>
+      <div class='page-header'>
+        <h2>{{post.title}}
+          <small><strong> By : {{post.name}}</strong></small>
+        </h2>
+      </div>
+      <h3> Description:  </h3>
+      <span> {{post.description}}</span>
+      <div class='text-center'>
+
+        <span>Posted : {{post.date | date:'medium'}} || </span>
+        <span class='glyphicon glyphicon-comment' ng-click='post.commentShow = !post.commentShow'> comments: {{post.comments.length}} ||  </span>
+
+        <span class='glyphicon glyphicon-pencil' ng-click='post.writeComment = true'> Write a comment </span>
+      </div>
+
+    </div>
+    <div ng-show='post.writeComment' class='col-md-6 col-md-offset-3 submit'>
+      <form class='form-group'>
+        <label for='Commentname'> Name </label>
+        <input type='text' name='Commentname' class='form-control' ng-model='comment.name'>
+        <label for='name'> Comment </label>
+        <input type='text' name='comment' class='form-control' ng-model='comment.comment'>
+        <input type='submit' class='btn btn-primary submit' ng-click='submitComment()'>
+      </form>
+    </div>
+    <div ng-show='post.commentShow' class='col-md-6 col-md-offset-3 submit'>
+      <div ng-repeat='comment in post.comments'>
+        <p> <strong>{{comment.name}}</strong> says ... 
+        </br>
+          {{comment.comment}}</p>
+      </div>
+    </div>
+  </div>
+
+
+</body>
